@@ -41,8 +41,8 @@ export default function LoginPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-600">
             Welcome back
           </p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-ink-900">
-            Sign in to continue your travel plans
+          <h1 className="mt-3 text-3xl font-medium tracking-tight text-ink-900">
+            Sign in to Continue Your Travel Plans
           </h1>
           <p className="mt-3 text-sm leading-relaxed text-ink-600">
             Access your bookings, manage your host activity, and continue
@@ -65,7 +65,7 @@ export default function LoginPage() {
         </div>
 
         <div className="p-8 md:p-10">
-          <h2 className="text-2xl font-semibold text-ink-900">Sign in</h2>
+          <h2 className="text-2xl font-medium text-ink-900">Sign in</h2>
           <p className="mt-1 text-sm text-ink-600">
             Continue as a guest or host.
           </p>
