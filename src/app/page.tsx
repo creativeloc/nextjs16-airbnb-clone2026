@@ -14,6 +14,7 @@ import {
 } from "lucide-react"
 import { fetchDemoProperties } from "@/lib/demo-properties"
 import { SafeImage } from "@/components/safe-image"
+import { HomeSearchBar } from "@/components/home-search-bar"
 
 type HomePageProps = {
   searchParams: Promise<{
@@ -117,6 +118,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         </div>
         <div className="mx-auto mt-7 max-w-230 md:mt-8">
           {/* Home Search Bar goes here */}
+          <HomeSearchBar />
         </div>
         <div className="mx-auto mt-6 flex max-w-230 items-start justify-between gap-3">
           <div className="hide-scrollbar flex gap-2 overflow-x-auto whitespace-nowrap pb-1">
