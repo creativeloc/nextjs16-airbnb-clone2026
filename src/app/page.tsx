@@ -9,6 +9,7 @@ import {
   Star,
   TreePalm,
   TreePalmIcon,
+  Users,
   Waves
 } from "lucide-react"
 import { fetchDemoProperties } from "@/lib/demo-properties"
@@ -197,6 +198,45 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           ))}
         </div>
       </section>
+
+      {/* Footer Section */}
+      <footer className="mt-16 rounded-3xl border border-ink-200 bg-surface p-6 shadow-sm md:mt-14 md:p-7">
+        <div className="grid gap-8 md:grid-cols-4">
+          <div className="md:col-span-2">
+            <h3 className="text-2xl font-semibold text-ink-900">StayScape</h3>
+            <p className="mt-3 max-w-xl text-sm text-ink-600">
+              Discover carefully curated US stays with a booking flow designed
+              for clarity and confidence. Compare homes quickly and reserve with
+              ease.
+            </p>
+            <p className="mt-5 inline-flex items-center gap-1 text-xs text-ink-500">
+              <Users className="h-3.5 w-3.5" />
+              Powered by curated sample listing data focused on US destinations
+            </p>
+          </div>
+          <div>
+            <h4 className="text-sm font-semibold text-ink-900">Explore</h4>
+            <ul className="mt-3 space-y-2 text-sm text-ink-600">
+              <li>City Getaways</li>
+              <li>Coastal Retreats</li>
+              <li>Cabin Weekends</li>
+              <li>Extended Stays</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-sm font-semibold text-ink-900">Support</h4>
+            <ul className="mt-3 space-y-2 text-sm text-ink-600">
+              <li>Guest Help Center</li>
+              <li>Host Guidelines</li>
+              <li>Cancellation Policy</li>
+              <li>Trust and Safety</li>
+            </ul>
+          </div>
+        </div>
+        <div className="mt-8 border-t border-ink-200 pt-4 text-xs text-ink-500">
+          &copy; {new Date().getFullYear()} StayScape. All Rights Reserved.
+        </div>
+      </footer>
     </main>
   )
 }
