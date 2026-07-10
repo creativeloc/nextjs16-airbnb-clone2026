@@ -1,7 +1,202 @@
-export default function Home() {
+import Link from "next/link"
+import {
+  ChevronRight,
+  Flame,
+  HomeIcon,
+  Landmark,
+  Mountain,
+  Snowflake,
+  Star,
+  TreePalm,
+  TreePalmIcon,
+  Waves
+} from "lucide-react"
+import { fetchDemoProperties } from "@/lib/demo-properties"
+import { SafeImage } from "@/components/safe-image"
+
+type HomePageProps = {
+  searchParams: Promise<{
+    location?: string
+    category?: string
+    checkIn?: string
+    checkOut?: string
+    guests?: string
+    adults?: string
+    children?: string
+    infants?: string
+  }>
+}
+
+type UnifiedCard = {
+  id: string
+  title: string
+  image: string
+  city: string
+  category: string
+  hostName: string
+  rating: number
+  price: number
+  maxGuests: number
+  availableDates: string[]
+  isExternal: boolean
+}
+
+const categoryItems = [
+  { label: "Scenic Views", icon: Mountain },
+  { label: "Beachfront", icon: TreePalmIcon },
+  { label: "Guest Favorites", icon: Flame },
+  { label: "Cabins", icon: HomeIcon },
+  { label: "Countryside Stays", icon: TreePalm },
+  { label: "Lakefront", icon: Waves },
+  { label: "Historic Homes", icon: Landmark },
+  { label: "Ski-in/out", icon: Snowflake }
+]
+
+function normalizeUsCity(location: string) {
+  const lower = location.toLowerCase()
+  if (lower.includes("new york")) return "New York, United States"
+  if (lower.includes("los angeles")) return "Los Angeles, United States"
+  if (lower.includes("miami")) return "Miami, United States"
+  if (lower.includes("chicago")) return "Chicago, United States"
+  if (lower.includes("san francisco")) return "San Francisco, United States"
+  if (lower.includes("seattle")) return "Seattle, United States"
+  if (lower.includes("boston")) return "Boston, United States"
+  if (lower.includes("new jersey")) return "New Jersey, United States"
+  return "United States"
+}
+
+export default async function HomePage({ searchParams }: HomePageProps) {
+  const params = await searchParams
+
+  const hasAnyFilter = Boolean(params.category?.trim())
+
+  const demoProperties = await fetchDemoProperties()
+  const allCards: UnifiedCard[] = [
+    ...demoProperties.map((property, index) => ({
+      id: property.id,
+      title: property.title,
+      image: property.image,
+      city: normalizeUsCity(property.city),
+      category:
+        categoryItems[index % categoryItems.length]?.label ?? "Trending",
+      hostName: property.hostName,
+      rating: property.rating,
+      price: property.pricePerNight,
+      maxGuests: property.maxGuests,
+      availableDates: property.availableDates,
+      isExternal: true
+    }))
+  ]
+
+  const unifiedCards = allCards.filter((card) => {
+    const byCategory = params.category
+      ? card.category.toLowerCase() === params.category.toLowerCase()
+      : true
+    return byCategory
+  })
+
+  const limitedCards = unifiedCards.slice(0, 20)
+  const defaultGridCards = limitedCards
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-black font-sans dark:bg-black">
-      <h1 className="text-white text-2xl">Airbnb Clone</h1>
-    </div>
+    <main className="mx-auto min-h-screen max-w-7xl px-4 pb-14 pt-8 md:px-8 md:pb-12 md:pt-6">
+      <section className="rounded-3xl border border-ink-200 bg-linear-to-br from-brand-50 via-surface to-ink-50 p-6 md:p-10">
+        <div className="mx-auto max-w-202 text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-600">
+            Thoughtfully selected homes across the United States
+          </p>
+          <h1 className="mt-5 text-3xl font-bold tracking-tight text-ink-900 md:mt-3 md:text-5xl">
+            Find the Right Place to Stay
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-ink-600 md:mt-3 md:text-base">
+            Explore professionally presented stays in leading US destinations.
+            Filter by location, dates, and guest count to shortlist the best fit
+            for your trip.
+          </p>
+        </div>
+        <div className="mx-auto mt-7 max-w-230 md:mt-8">
+          {/* Home Search Bar goes here */}
+        </div>
+        <div className="mx-auto mt-6 flex max-w-230 items-start justify-between gap-3">
+          <div className="hide-scrollbar flex gap-2 overflow-x-auto whitespace-nowrap pb-1">
+            {categoryItems.map((item) => {
+              const Icon = item.icon
+              const isActive = params.category === item.label
+
+              return (
+                <Link
+                  key={item.label}
+                  href={`/?category=${encodeURIComponent(item.label)}${params.location ? `&location=${encodeURIComponent(params.location)}` : ""}${params.guests ? `&guests=${encodeURIComponent(params.guests)}` : ""}${params.adults ? `&adults=${encodeURIComponent(params.adults)}` : ""}${params.children ? `&children=${encodeURIComponent(params.children)}` : ""}${params.infants ? `&infants=${encodeURIComponent(params.infants)}` : ""}${params.checkIn ? `&checkIn=${encodeURIComponent(params.checkIn)}` : ""}${params.checkOut ? `&checkOut=${encodeURIComponent(params.checkOut)}` : ""}`}
+                  className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition ${
+                    isActive
+                      ? "border-ink-900 bg-ink-900 text-white"
+                      : "border-ink-300 text-ink-700 hover:bg-ink-100"
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span>{item.label}</span>
+                </Link>
+              )
+            })}
+          </div>
+          {hasAnyFilter ? (
+            <Link
+              href="/"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full border border-ink-300 px-4 py-2 text-sm font-medium text-ink-700 hover:bg-ink-100"
+            >
+              Clear Filters
+            </Link>
+          ) : null}
+        </div>
+        <p className="mx-auto mt-3 max-w-230 text-sm text-ink-600">
+          Showing stays for{" "}
+          <span className="ont-medium text-ink-900">Guests</span>
+          {"."}
+          <span className="ont-medium text-ink-900">Dates</span>
+          {"."}
+          <span className="ont-medium text-ink-900">Location</span>
+        </p>
+      </section>
+      <section className="mt-10 md:mt-8">
+        <div className="mb-4 flex items-center gap-2">
+          <h2 className="text-2xl font-semibold tracking-tight text-ink-900">
+            Top Picks Across the United States
+          </h2>
+          <ChevronRight className="h-5 w-5 text-ink-700" />
+        </div>
+
+        <div className="grid grid-cols-2 gap-x-4 gap-y-6 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
+          {defaultGridCards.map((item, index) => (
+            <Link key={item.id} href="#" className="block space-y-2">
+              <div className="overflow-hidden rounded-2xl">
+                <SafeImage
+                  src={item.image}
+                  alt={item.title}
+                  width={420}
+                  height={280}
+                  className="h-48 w-full object-cover"
+                  priority={index < 2}
+                />
+              </div>
+              <div className="space-y-0.5 px-0.5">
+                <p className="inline-flex rounded-full bg-ink-100 px-2 py-0.5 text-[11px] font-medium text-ink-700">
+                  {item.city}
+                </p>
+                <p className="line-clamp-1 text-sm font-medium text-ink-900">
+                  {item.title}
+                </p>
+                <p className="line-clamp-1 text-xs text-ink-500">
+                  ${item.price} for 2 nights
+                  <span className="ml-1 inline-flex items-center gap-0.5">
+                    <Star className="h-3 w-3 fill-current text-ink-700" />
+                    {item.rating} Rating
+                  </span>
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </main>
   )
 }
